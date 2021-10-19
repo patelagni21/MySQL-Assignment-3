@@ -1,0 +1,53 @@
+QUERY 1
+
+
+=============================================================================================================
+QUERY 2
+
+Select min(timestamp), precinct from Penna_fully_sorted  where trump+biden > 500 group by precinct
+
+
+TOO MANY RESULTS (As per the email too many don't need a mention)
+=============================================================================================================
+QUERY 3
+With final_pc_diff as (with final_ts as (select precinct, max(timestamp) as m_ts from Penna_fully_sorted group by precinct) Select final_ts.precinct, (biden-trump) as bt_diff  from final_ts left join Penna_fully_sorted on final_ts.precinct = Penna_fully_sorted.precinct and final_ts.m_ts = Penna_fully_sorted.timestamp) select * from final_pc_diff where abs(bt_diff) = (select min(abs(bt_diff)) from final_pc_diff) 
+
+
+(LOWER SWATARA TWP--3RD PRECINCT , 0) and    Pottstown 7-2 , 0 )
+=============================================================================================================
+QUERY 4
+with w_lag as (select precinct, biden, trump ,timestamp,
+ lag( biden, 1, 0) OVER  (PARTITION BY precinct ORDER BY timestamp) as prev_ts_biden, 
+lag( trump, 1, 0) OVER  (PARTITION BY precinct ORDER BY timestamp) as prev_ts_trump
+FROM Penna_fully_sorted) SELECT timestamp,  precinct, trump FROM w_lag WHERE biden < prev_ts_biden OR trump < prev_ts_trump
+
+2020-11-06 15:38:36.0
+2020-11-04 03:47:34.0
+2020-11-06 22:01:06.0
+=============================================================================================================
+QUERY 5
+with s_precinct as ( select sum(trump) as s_trump, sum(biden) as s_biden, timestamp from Penna_fully_sorted group by timestamp ) select  timestamp from s_precinct where abs(s_biden - s_trump) = (select max(abs(s_biden -s_trump)) from s_precinct)
+
+
+2020-11-10 21:30:56  and 2020-11-10 21:45:52
+=============================================================================================================
+QUERY 6
+
+select * FROM ( select sum(trump) as s_trump, sum(biden) as s_biden, timestamp from Penna_fully_sorted group by timestamp ) as s_precinct where s_precinct.s_trump - s_precinct.s_biden > 0
+QUERY 1
+select timestamp FROM ( select sum(trump) as s_trump, sum(biden) as s_biden, timestamp from Penna_fully_sorted group by timestamp ) as s_precinct where s_precinct.s_trump - s_precinct.s_biden >= 100
+
+--BLANK--
+=============================================================================================================
+QUERY 7
+
+
+=============================================================================================================
+QUERY 8
+
+
+=============================================================================================================
+QUERY 9
+
+
+=============================================================================================================
